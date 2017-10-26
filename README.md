@@ -29,7 +29,7 @@ This will give an idea of the simulator and the code and does not requires any d
      
       ``cd ./blocks/BlockWorldRoboticAgent/``
       
-      ``export PYTHONPATH=<location-of-blocks-folder>/BLockWorldRoboticAgent/:$PYTHONPATH``
+      ``export PYTHONPATH=<location-of-blocks-folder>/BlockWorldRoboticAgent/:$PYTHONPATH``
       
       ``python ./experiments/test_oracle.py``
       
