@@ -15,7 +15,7 @@ class EmbedTokenSeq:
     def __init__(self, output_size, ignore_case=True, num_steps=83, create_copy=None, scope_name="RNN"):
         self.batch_size = tf.placeholder(dtype=tf.int32)
         self.num_steps = num_steps
-        self.lstm_size = 200
+        self.lstm_size = 200 # ???
         self.output_size = output_size
         self.ignore_case = ignore_case
 
