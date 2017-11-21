@@ -62,6 +62,7 @@ class EmbedImage:
 
         # conv + affine + relu
         with tf.variable_scope(scope_name + '_conv4') as scope:
+            print("using conv4")
             kernel = self._variable_with_weight_decay('weights', shape=[4, 4, 32, 32],
                                                       stddev=0.005, wd=0.0)
             conv = tf.nn.conv2d(conv3, kernel, [1, 2, 2, 1], padding='SAME')
