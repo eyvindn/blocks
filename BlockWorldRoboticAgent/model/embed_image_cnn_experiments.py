@@ -71,10 +71,21 @@ class EmbedImage:
             conv4 = tf.nn.relu(bias, name=scope.name)
             self.variables.extend([kernel, biases])
 
+        # conv + affine + relu
+        with tf.variable_scope(scope_name + '_conv5') as scope:
+            print("using conv5")
+            kernel = self._variable_with_weight_decay('weights', shape=[4, 4, 32, 32],
+                                                      stddev=0.005, wd=0.0)
+            conv = tf.nn.conv2d(conv4, kernel, [1, 1, 1, 1], padding='SAME')
+            biases = self._variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
+            bias = tf.nn.bias_add(conv, biases)
+            conv5 = tf.nn.relu(bias, name=scope.name)
+            self.variables.extend([kernel, biases])
+
         # affine
         with tf.variable_scope(scope_name + '_linear') as scope:
             # Move everything into depth so we can perform a single matrix multiply.
-            reshape = tf.reshape(conv4, [batchsize, -1])
+            reshape = tf.reshape(conv5, [batchsize, -1])
             # Value before is hacked
             # Not sure how to fix it
             # It if based on image dimension
