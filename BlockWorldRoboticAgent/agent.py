@@ -12,7 +12,7 @@ from model.policy_network import PolicyNetwork
 from model.q_network import ActionValueFunctionNetwork
 from model.v_network import StateValueFunctionModel
 import generic_policy as gp
-
+from datetime import datetime
 
 # The different kind of training algorithm that are used to train the agent.
 # SUPERVISEDMLE: Supervised learning that maximizes log-likelihood of next action.
@@ -29,7 +29,7 @@ class Agent:
     def __init__(self, train_alg, config, constants):
 
         # Initialize logger
-        logger.Log.open("./log.txt")
+        logger.Log.open("./log_" + str(datetime.now()) + ".txt")
 
         self.config = config
 
@@ -107,7 +107,7 @@ class Agent:
             self.sess.run(tf.initialize_all_variables())
             logger.Log.info("Initialized all variables ")
             saver = tf.train.Saver()
-            saver.save(self.sess, "./saved/init.ckpt")
+            saver.save(self.sess, "./saved/init_5_cnn.ckpt")
         else:
             saver = tf.train.Saver()
             saver.restore(self.sess, model_file)
