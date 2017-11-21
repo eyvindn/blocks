@@ -1,6 +1,10 @@
 import embed_token_seq
 import image_preprocessing
-import embed_image
+
+#CHANGED
+import embed_image_cnn_experiments
+
+
 import mix_and_gen_prob
 import embed_previous_action as epa
 import tensorflow as tf
@@ -34,7 +38,9 @@ class PolicyNetwork:
 
         # Neural network for embedding image
         self.n_image = constants["image_hidden_dim"]
-        self.image_embedder = embed_image.EmbedImage(self.n_image, image_dim)
+
+        #CHANGED
+        self.image_embedder = embed_image_cnn_experiments.EmbedImage(self.n_image, image_dim)
         image_embedding = self.image_embedder.get_output()
 
         # Network for embedding past action
