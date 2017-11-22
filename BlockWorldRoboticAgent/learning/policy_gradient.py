@@ -79,14 +79,14 @@ class PolicyGradient(AbstractLearning):
 
         return loss, entropy_penalty
 
-    def train(self, sess, train_writer, max_epoch=AbstractLearning.max_epochs, model_name="./model_5_cnn"):
+    def train(self, sess, train_writer, max_epoch=AbstractLearning.max_epochs, model_name="./model_vanilla"):
         """ Performs policy gradient learning using Reinforce on the Block World Task. The agent interacts with the
          simulator and performs roll-out followed by REINFORCE updates. """
 
         start = time.time()
 
         # Initialization using 2 epochs of MLE
-        self.mle_policy_gradient.train(sess, train_writer, max_epoch=2, model_name="./model_mle_5_cnn", terminate=False)
+        self.mle_policy_gradient.train(sess, train_writer, max_epoch=2, model_name="./model_mle_vanilla", terminate=False)
         # Reinitialize the direction parameters
         w1, b1 = self.policy_model.mix_and_gen_prob.get_direction_weights()
         sess.run(tf.initialize_variables([w1, b1]))

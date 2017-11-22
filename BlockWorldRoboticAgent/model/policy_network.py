@@ -2,7 +2,9 @@ import embed_token_seq
 import image_preprocessing
 
 #CHANGED
-import embed_image_cnn_experiments
+#import embed_image_cnn_experiments
+
+import embed_image
 
 
 import mix_and_gen_prob
@@ -40,7 +42,7 @@ class PolicyNetwork:
         self.n_image = constants["image_hidden_dim"]
 
         #CHANGED
-        self.image_embedder = embed_image_cnn_experiments.EmbedImage(self.n_image, image_dim)
+        self.image_embedder = embed_image.EmbedImage(self.n_image, image_dim)
         image_embedding = self.image_embedder.get_output()
 
         # Network for embedding past action
