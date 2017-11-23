@@ -16,7 +16,8 @@ class EmbedTokenSeq:
         self.batch_size = tf.placeholder(dtype=tf.int32)
         self.num_steps = num_steps
         self.lstm_size = 200 # ???
-        self.output_size = output_size
+        # since we now have back and forth, divide by two (UGLY HACK)
+        self.output_size = output_size/2
         self.ignore_case = ignore_case
 
         # Word embedding matrix
@@ -89,8 +90,9 @@ class EmbedTokenSeq:
             if create_copy is not None:
                 tf.get_variable_scope().reuse_variables()
             self.output, _, _ = tf.nn.bidirectional_rnn(lstm_cell_forwards, lstm_cell_backwards, x, dtype=tf.float32)
-        print(self.output[0])
-        self.output = self.output[0]
+
+        self.output = [self.output[0][num_steps-1]]
+        print(self.output)
         #cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell])
 
         #self._initial_state = cell.zero_state(self.batch_size, tf.float32)
