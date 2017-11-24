@@ -61,10 +61,12 @@ class EmbedTokenSeq:
         # # Required shape: 'timesteps' tensors list of shape (batch_size, num_input)
         #
         # # Unstack to get a list of 'timesteps' tensors of shape (batch_size, num_input)
-        print(inputs)
-        print(self.embedding)
-        x = tf.unstack(inputs, 1)
-        print(x)
+        # print(inputs)
+        # print(self.embedding)
+        # inputs = tf.reshape(inputs, (self.batch_size, num_steps, -1))
+        # print(inputs)
+        # x = tf.unstack(inputs, 1)
+        # print(x)
         #
         # # Define lstm cells with tensorflow
         # # Forward direction cell
@@ -87,15 +89,71 @@ class EmbedTokenSeq:
         with tf.variable_scope('backwards'):
             lstm_cell_backwards = tf.nn.rnn_cell.BasicLSTMCell(self.output_size, forget_bias=1.0)
 
+
+
         # Let's skip doing the average of the LSTM and see if just doing a bi-lstm and taking the
         # depth-concatenated output of the lstm
-        with tf.variable_scope(scope_name):
-            if create_copy is not None:
-                tf.get_variable_scope().reuse_variables()
-            self.output, _, _ = tf.nn.bidirectional_rnn(lstm_cell_forwards, lstm_cell_backwards, x, dtype=tf.float32)
 
-        self.output = tf.reshape(self.output[0][num_steps-1], (1,-1))
+
+        with tf.variable_scope("BiRNN"):
+
+            # Forward direction
+            with tf.variable_scope("FW"):
+                cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell_forwards])
+                self._initial_state = cell.zero_state(self.batch_size, tf.float32)
+                outputs = []
+                state = self._initial_state
+                with tf.variable_scope(scope_name):
+                    for time_step in range(self.num_steps):
+                        if time_step > 0 or create_copy is not None:
+                            tf.get_variable_scope().reuse_variables()
+                        (cell_output, state) = cell(inputs[:, time_step, :], state)
+                        # zero_mask = self.mask[:, time_step]
+                        # zero_mask = tf.reshape(zero_mask, [self.batch_size, 1])
+                        # masked_output = tf.mul(cell_output, zero_mask)
+                        # outputs.append(masked_output)
+                    output_fw = cell_output
+
+            # Backward direction
+            with tf.variable_scope("BW"):
+
+                reversed_inputs = tf.reverse(inputs, [False, True, False])
+
+                cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell_backwards])
+                self._initial_state = cell.zero_state(self.batch_size, tf.float32)
+                outputs = []
+                state = self._initial_state
+                with tf.variable_scope(scope_name):
+                    for time_step in range(self.num_steps):
+                        if time_step > 0 or create_copy is not None:
+                            tf.get_variable_scope().reuse_variables()
+                        (cell_output, state) = cell(inputs[:, time_step, :], state)
+                        # zero_mask = self.mask[:, time_step]
+                        # zero_mask = tf.reshape(zero_mask, [self.batch_size, 1])
+                        # masked_output = tf.mul(cell_output, zero_mask)
+                        # outputs.append(masked_output)
+                    output_bw = cell_output
+        print("output")
+        self.output = tf.concat(1,[output_fw, output_bw])
         print(self.output)
+        # output_bw = _reverse_seq(tmp, sequence_length)
+        # # Concat each of the forward/backward outputs
+        # flat_output_fw = nest.flatten(output_fw)
+        # flat_output_bw = nest.flatten(output_bw)
+        #
+        # flat_outputs = tuple(array_ops.concat(1, [fw, bw])
+        #                      for fw, bw in zip(flat_output_fw, flat_output_bw))
+        #
+        # outputs = nest.pack_sequence_as(structure=output_fw,
+        #                                 flat_sequence=flat_outputs)
+
+        # with tf.variable_scope(scope_name):
+        #     if create_copy is not None:
+        #         tf.get_variable_scope().reuse_variables()
+        #     self.output, _, _ = tf.nn.bidirectional_rnn(lstm_cell_forwards, lstm_cell_backwards, x, dtype=tf.float32)
+
+        #self.output = tf.reshape(self.output[0][num_steps-1], (1,-1))
+        #print(self.output)
         #cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell])
 
         #self._initial_state = cell.zero_state(self.batch_size, tf.float32)
