@@ -84,10 +84,7 @@ class EmbedTokenSeq:
         #
         # # Linear activation, using rnn inner loop last output
         # return tf.matmul(outputs[-1], weights['out']) + biases['out']
-        with tf.variable_scope('forward'):
-            lstm_cell_forwards = tf.nn.rnn_cell.BasicLSTMCell(self.output_size, forget_bias=1.0)
-        with tf.variable_scope('backwards'):
-            lstm_cell_backwards = tf.nn.rnn_cell.BasicLSTMCell(self.output_size, forget_bias=1.0)
+
 
 
 
@@ -99,53 +96,65 @@ class EmbedTokenSeq:
 
             # Forward direction
             with tf.variable_scope("FW"):
+                lstm_cell_forwards = tf.nn.rnn_cell.BasicLSTMCell(self.output_size, forget_bias=1.0)
                 cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell_forwards])
                 self._initial_state = cell.zero_state(self.batch_size, tf.float32)
-                outputs = []
+                outputs_fw = []
                 state = self._initial_state
                 with tf.variable_scope(scope_name):
                     for time_step in range(self.num_steps):
                         if time_step > 0 or create_copy is not None:
                             tf.get_variable_scope().reuse_variables()
                         (cell_output, state) = cell(inputs[:, time_step, :], state)
-                        # zero_mask = self.mask[:, time_step]
-                        # zero_mask = tf.reshape(zero_mask, [self.batch_size, 1])
-                        # masked_output = tf.mul(cell_output, zero_mask)
-                        # outputs.append(masked_output)
+                        zero_mask = self.mask[:, time_step]
+                        #per word masking
+                        zero_mask = tf.reshape(zero_mask, [self.batch_size, 1])
+                        masked_output = tf.mul(cell_output, zero_mask)
+                        outputs_fw.append(masked_output)
                     output_fw = cell_output
 
             # Backward direction
             with tf.variable_scope("BW"):
-
+                lstm_cell_backwards = tf.nn.rnn_cell.BasicLSTMCell(self.output_size, forget_bias=1.0)
                 reversed_inputs = tf.reverse(inputs, [False, True, False])
+                reversed_mask = tf.reverse(self.mask, [False, True])
 
                 cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell_backwards])
                 self._initial_state = cell.zero_state(self.batch_size, tf.float32)
-                outputs = []
+                outputs_bw = []
                 state = self._initial_state
                 with tf.variable_scope(scope_name):
                     for time_step in range(self.num_steps):
                         if time_step > 0 or create_copy is not None:
                             tf.get_variable_scope().reuse_variables()
-                        (cell_output, state) = cell(inputs[:, time_step, :], state)
-                        # zero_mask = self.mask[:, time_step]
-                        # zero_mask = tf.reshape(zero_mask, [self.batch_size, 1])
-                        # masked_output = tf.mul(cell_output, zero_mask)
-                        # outputs.append(masked_output)
+                        (cell_output, state) = cell(reversed_inputs[:, time_step, :], state)
+                        zero_mask = reversed_mask[:, time_step]
+                        zero_mask = tf.reshape(zero_mask, [self.batch_size, 1])
+                        masked_output = tf.mul(cell_output, zero_mask)
+                        outputs_bw.append(masked_output)
                     output_bw = cell_output
-        print("output")
-        self.output = tf.concat(1,[output_fw, output_bw])
-        print(self.output)
+
+        #Reverse and combine the outputs!
+        outputs_bw_reversed = tf.reverse(outputs_bw, [True, False, False])
+        print("OUTPUS_FW")
+
+
+        num_tokens = tf.reduce_sum(self.mask, 1)
+        num_tokens = tf.reshape(num_tokens, [self.batch_size, 1])
+
+        temporal_sum_bw = tf.reduce_sum(outputs_bw_reversed, 0)
+        temporal_sum_fw = tf.reduce_sum(outputs_fw, 0)
+
+        avg_bw = tf.div(temporal_sum_bw, num_tokens)
+        avg_fw = tf.div(temporal_sum_fw, num_tokens)
+        # print(avg_bw)
+        # print(avg_fw)
+        self.output = tf.concat(1,[avg_fw, avg_bw])
+        # print(self.output)
+        # print(self.output)
         # output_bw = _reverse_seq(tmp, sequence_length)
         # # Concat each of the forward/backward outputs
-        # flat_output_fw = nest.flatten(output_fw)
-        # flat_output_bw = nest.flatten(output_bw)
-        #
-        # flat_outputs = tuple(array_ops.concat(1, [fw, bw])
-        #                      for fw, bw in zip(flat_output_fw, flat_output_bw))
-        #
-        # outputs = nest.pack_sequence_as(structure=output_fw,
-        #                                 flat_sequence=flat_outputs)
+
 
         # with tf.variable_scope(scope_name):
         #     if create_copy is not None:
