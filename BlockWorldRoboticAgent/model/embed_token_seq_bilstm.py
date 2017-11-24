@@ -91,7 +91,7 @@ class EmbedTokenSeq:
                 tf.get_variable_scope().reuse_variables()
             self.output, _, _ = tf.nn.bidirectional_rnn(lstm_cell_forwards, lstm_cell_backwards, x, dtype=tf.float32)
 
-        self.output = [self.output[0][num_steps-1]]
+        self.output = tf.reshape(self.output[0][num_steps-1], (1,-1))
         print(self.output)
         #cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell])
 
