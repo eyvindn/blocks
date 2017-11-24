@@ -61,7 +61,10 @@ class EmbedTokenSeq:
         # # Required shape: 'timesteps' tensors list of shape (batch_size, num_input)
         #
         # # Unstack to get a list of 'timesteps' tensors of shape (batch_size, num_input)
+        print(inputs)
+        print(self.embedding)
         x = tf.unstack(inputs, 1)
+        print(x)
         #
         # # Define lstm cells with tensorflow
         # # Forward direction cell
