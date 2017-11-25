@@ -16,7 +16,7 @@ class AgentModelLess:
     def __init__(self, agent_type, config, constants):
 
         # Initialize logger
-        logger.Log.open("./log.txt")
+        logger.Log.open("./log_modelless.txt")
 
         self.config = config
 
