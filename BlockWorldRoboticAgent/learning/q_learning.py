@@ -216,7 +216,7 @@ class QLearning(AbstractLearning):
             # Compute validation accuracy
             avg_bisk_metric = self.agent.test(tuning_size)
             logger.Log.info("Tuning Data: (end of epoch " + str(epoch) + ") Avg. Bisk Metric: "
-                            + str(avg_bisk_metric) + "Min was " + str(min_avg_bisk_metric))
+                            + str(avg_bisk_metric) + "and Min was " + str(min_avg_bisk_metric))
             # Save the model
             save_path = saver.save(sess, "./saved/model_epoch_" + str(epoch) + ".ckpt")
             logger.Log.info("Model saved in file: " + str(save_path))
