@@ -49,7 +49,7 @@ class PolicyNetwork:
         image_embedding = self.image_embedder.get_output()
 
         # Network for embedding past action
-        # 6 actions, one for no-action
+        # 5? actions, one for no-action
         num_blocks = constants["num_block"]
         self.num_directions = constants["num_direction"]
         self.n_direction_dim = constants["direction_dim"]
