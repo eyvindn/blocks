@@ -3,7 +3,7 @@
 # All consntants are stored in a dictionary called constants.
 constants = dict()
 
-constants["text_hidden_dim"] = 250
+constants["text_hidden_dim"] = 500
 constants["image_hidden_dim"] = 200
 constants["direction_dim"] = 24
 constants["block_dim"] = 32
