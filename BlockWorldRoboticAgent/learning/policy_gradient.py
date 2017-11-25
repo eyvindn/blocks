@@ -205,6 +205,7 @@ class PolicyGradient(AbstractLearning):
                         iteration += 1
                         logger.Log.info("Number of sample " + str(len(replay_memory_items)) + " loss = " + str(loss))
                         logger.Log.info("Total reward:" + str(total_reward_episode) + " Steps: " + str(steps))
+                        logger.Log.info("Final instruction was " + str(direction_id))
 
                         # Print time statistics
                         total_time = time.time() - start
