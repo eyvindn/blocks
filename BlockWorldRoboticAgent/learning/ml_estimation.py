@@ -94,7 +94,7 @@ class MaximumLikelihoodEstimation(AbstractLearning):
             for data_point in range(1, train_size + 1):
 
                 # Create a queue to handle history of states
-                state = collections.deque([], 5)
+                state = collections.deque([], 1)
                 # Add the dummy images
                 dummy_images = self.policy_model.image_embedder.get_padding_images()
                 [state.append(v) for v in dummy_images]

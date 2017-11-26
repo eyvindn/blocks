@@ -6,7 +6,7 @@ class ImagePreprocessing:
 
     def __init__(self):
         """ Computation graph for image processing """
-        self.raw_image = tf.placeholder(shape=(None, None, 15), dtype=tf.float32)
+        self.raw_image = tf.placeholder(shape=(None, None, 3), dtype=tf.float32)
         whitened_image = tf.image.per_image_standardization(self.raw_image)
         self.final_image = whitened_image
 
