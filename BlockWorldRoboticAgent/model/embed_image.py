@@ -16,7 +16,7 @@ class EmbedImage:
         self.output_size = output_size
         height = image_dim
         width = image_dim
-        channels = 3 * 5
+        channels = 3# * 5
 
         self.variables = []
 
