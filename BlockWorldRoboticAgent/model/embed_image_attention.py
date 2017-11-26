@@ -13,7 +13,10 @@ class EmbedImage:
         """ Embeds a batch of image using 2 layer convolutional neural network
          followed by a fully connected layer. """
 
+        #
         self.output_size = output_size
+
+        #We want to use the CNN to divide the region into images, over which we can do attention.
         height = image_dim
         width = image_dim
         channels = 3 * 5

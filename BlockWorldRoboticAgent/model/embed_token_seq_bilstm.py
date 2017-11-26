@@ -136,8 +136,6 @@ class EmbedTokenSeq:
 
         #Reverse and combine the outputs!
         outputs_bw_reversed = tf.reverse(outputs_bw, [True, False, False])
-        print("OUTPUS_FW")
-
 
         num_tokens = tf.reduce_sum(self.mask, 1)
         num_tokens = tf.reshape(num_tokens, [self.batch_size, 1])

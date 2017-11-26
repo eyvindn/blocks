@@ -85,7 +85,7 @@ class MaximumLikelihoodEstimation(AbstractLearning):
         min_avg_bisk_metric = avg_bisk_metric
         patience = 0
         max_patience = AbstractLearning.max_patience
-        logger.Log.info("Tuning Data: (Before Training) Avg. Bisk Metric: " + str(avg_bisk_metric))
+        logger.Log.info("Maximum Likelihood: Tuning Data: (Before Training) Avg. Bisk Metric: " + str(avg_bisk_metric))
 
         for epoch in range(1, max_epoch + 1):
             logger.Log.info("=================\n Starting Epoch: "
@@ -94,7 +94,7 @@ class MaximumLikelihoodEstimation(AbstractLearning):
             for data_point in range(1, train_size + 1):
 
                 # Create a queue to handle history of states
-                state = collections.deque([], 1)
+                state = collections.deque([], 5)
                 # Add the dummy images
                 dummy_images = self.policy_model.image_embedder.get_padding_images()
                 [state.append(v) for v in dummy_images]
@@ -104,7 +104,7 @@ class MaximumLikelihoodEstimation(AbstractLearning):
                 state.append(current_env)
                 (text_input_word_indices, text_mask) = \
                     self.policy_model.text_embedder.get_word_indices_and_mask(instruction)
-                logger.Log.info("=================\n " + str(data_point) + ": Instruction: "
+                logger.Log.info("Maximum Likelihood: =================\n " + str(data_point) + ": Instruction: "
                                 + str(instruction) + "\n=================")
 
                 traj_ix = 0
@@ -172,10 +172,10 @@ class MaximumLikelihoodEstimation(AbstractLearning):
             save_path = saver.save(sess, "./saved/" + str(model_name) + "_epoch_" + str(epoch) + ".ckpt")
             logger.Log.info("Model saved in file: " + str(save_path))
 
-            if epoch < max_epoch or terminate:
+            if epoch <= max_epoch or terminate:
                 # Compute validation accuracy
                 avg_bisk_metric = self.agent.test(tuning_size)
-                logger.Log.info("Tuning Data: (end of epoch " + str(epoch) + ") Avg. Bisk Metric: "
+                logger.Log.info("Maximum Likelihood: Tuning Data: (end of epoch " + str(epoch) + ") Avg. Bisk Metric: "
                                 + str(avg_bisk_metric) + "and Min was " + str(min_avg_bisk_metric))
 
                 if avg_bisk_metric >= min_avg_bisk_metric:

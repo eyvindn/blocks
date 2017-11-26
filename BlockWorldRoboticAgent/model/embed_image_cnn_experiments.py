@@ -31,65 +31,34 @@ class EmbedImage:
 
         # conv + affine + relu
         with tf.variable_scope(scope_name + '_conv1') as scope:
-            kernel = self._variable_with_weight_decay('weights', shape=[8, 8, channels, 32],
+            kernel = self._variable_with_weight_decay('weights', shape=[8, 8, channels, 10],
                                                       stddev=0.005, wd=0.0)
-            conv = tf.nn.conv2d(float_images, kernel, [1, 4, 4, 1], padding='SAME')
-            biases = self._variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
+            conv = tf.nn.conv2d(float_images, kernel, [1, 8, 8, 1], padding='SAME')
+            biases = self._variable_on_cpu('biases', [10], tf.constant_initializer(0.0))
             bias = tf.nn.bias_add(conv, biases)
             conv1 = tf.nn.relu(bias, name=scope.name)
             self.variables.extend([kernel, biases])
 
         # conv + affine + relu
         with tf.variable_scope(scope_name + '_conv2') as scope:
-            kernel = self._variable_with_weight_decay('weights', shape=[8, 8, 32, 32],
+            kernel = self._variable_with_weight_decay('weights', shape=[4, 4, 10, 10],
                                                       stddev=0.005, wd=0.0)
             conv = tf.nn.conv2d(conv1, kernel, [1, 4, 4, 1], padding='SAME')
-            biases = self._variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
+            biases = self._variable_on_cpu('biases', [10], tf.constant_initializer(0.0))
             bias = tf.nn.bias_add(conv, biases)
             conv2 = tf.nn.relu(bias, name=scope.name)
             self.conv2 = conv1
             self.variables.extend([kernel, biases])
 
-        # conv + affine + relu
-        with tf.variable_scope(scope_name + '_conv3') as scope:
-            kernel = self._variable_with_weight_decay('weights', shape=[4, 4, 32, 32],
-                                                      stddev=0.005, wd=0.0)
-            conv = tf.nn.conv2d(conv2, kernel, [1, 2, 2, 1], padding='SAME')
-            biases = self._variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
-            bias = tf.nn.bias_add(conv, biases)
-            conv3 = tf.nn.relu(bias, name=scope.name)
-            self.variables.extend([kernel, biases])
-
-        # conv + affine + relu
-        with tf.variable_scope(scope_name + '_conv4') as scope:
-            print("using conv4")
-            kernel = self._variable_with_weight_decay('weights', shape=[4, 4, 32, 32],
-                                                      stddev=0.005, wd=0.0)
-            conv = tf.nn.conv2d(conv3, kernel, [1, 1, 1, 1], padding='SAME')
-            biases = self._variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
-            bias = tf.nn.bias_add(conv, biases)
-            conv4 = tf.nn.relu(bias, name=scope.name)
-            self.variables.extend([kernel, biases])
-
-        # conv + affine + relu
-        with tf.variable_scope(scope_name + '_conv5') as scope:
-            print("using conv5")
-            kernel = self._variable_with_weight_decay('weights', shape=[4, 4, 32, 32],
-                                                      stddev=0.005, wd=0.0)
-            conv = tf.nn.conv2d(conv4, kernel, [1, 1, 1, 1], padding='SAME')
-            biases = self._variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
-            bias = tf.nn.bias_add(conv, biases)
-            conv5 = tf.nn.relu(bias, name=scope.name)
-            self.variables.extend([kernel, biases])
-
         # affine
         with tf.variable_scope(scope_name + '_linear') as scope:
             # Move everything into depth so we can perform a single matrix multiply.
-            reshape = tf.reshape(conv5, [batchsize, -1])
+            print(conv2)
+            reshape = tf.reshape(conv2, [batchsize, -1])
             # Value before is hacked
             # Not sure how to fix it
             # It if based on image dimension
-            dim = 512
+            dim = 160
             weights = self._variable_with_weight_decay('weights', [dim, self.output_size],
                                                        stddev=0.004, wd=0.004)
             biases = self._variable_on_cpu('biases', [self.output_size],

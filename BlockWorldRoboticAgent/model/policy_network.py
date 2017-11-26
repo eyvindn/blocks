@@ -1,11 +1,11 @@
-import embed_token_seq_bilstm
-# import embed_token_seq
+#import embed_token_seq_bilstm as embed_token_seq
+import embed_token_seq
 import image_preprocessing
 
 #CHANGED
-#import embed_image_cnn_experiments
+import embed_image_cnn_experiments as embed_image
 
-import embed_image
+#import embed_image
 
 
 import mix_and_gen_prob
@@ -26,7 +26,7 @@ class PolicyNetwork:
         # Neural network for embedding text
         self.n_text = constants["text_hidden_dim"]
         #CHANGED
-        self.text_embedder = embed_token_seq_bilstm.EmbedTokenSeq(self.n_text)
+        self.text_embedder = embed_token_seq.EmbedTokenSeq(self.n_text)
         text_embedding = self.text_embedder.get_output()
 
         # Create bucket network for RNN
@@ -35,7 +35,7 @@ class PolicyNetwork:
         for bucket in self.buckets:
             #CHANGED
             embed_token_seq_bucket = \
-                embed_token_seq_bilstm.EmbedTokenSeq(self.n_text, num_steps=bucket, create_copy=self.text_embedder)
+                embed_token_seq.EmbedTokenSeq(self.n_text, num_steps=bucket, create_copy=self.text_embedder)
             self.embed_token_seq_buckets.append(embed_token_seq_bucket)
 
         # Image Preprocessing
