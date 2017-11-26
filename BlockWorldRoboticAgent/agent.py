@@ -139,7 +139,7 @@ class Agent:
          which will iterate over the entire dataset and perform roll-out using test policy. """
 
         dummy_images = self.model.image_embedder.get_padding_images()
-        previous_state = collections.deque([], 5)
+        previous_state = collections.deque([], 1)
 
         sum_bisk_metric = 0
         sum_reward = 0
