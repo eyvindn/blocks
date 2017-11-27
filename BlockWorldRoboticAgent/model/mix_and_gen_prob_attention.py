@@ -49,7 +49,7 @@ class MixAndGenerateProbabilities:
             biases_3 = tf.get_variable('biases_new', [32], initializer=tf.constant_initializer(0.0))
 
             batched_3 = tf.reshape(keys_queries, [batchsize * 225, 32])
-            batched_final = tf.matmul(batched_3, weights)
+            batched_final = tf.matmul(batched_3, weights_3)
             attention_pre = tf.reshape(batched_final, [batchsize, 225, 1])
 
             finalAttention = tf.nn.softmax(tf.add(attention_pre, biases_3, "attention"))
