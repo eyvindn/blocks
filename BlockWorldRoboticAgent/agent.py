@@ -107,7 +107,7 @@ class Agent:
             self.sess.run(tf.initialize_all_variables())
             logger.Log.info("Initialized all variables ")
             saver = tf.train.Saver()
-            saver.save(self.sess, "./saved/init_small_cnn.ckpt")
+            saver.save(self.sess, "./saved/init_vanilla_show_mle_2.ckpt")
         else:
             saver = tf.train.Saver()
             saver.restore(self.sess, model_file)
