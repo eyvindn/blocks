@@ -17,7 +17,7 @@ class PrioritizedSweeping:
 
     def sample(self, replay_items, batch_size):
         """ Select a sample of size at most batch_size from replay_items using prioritized sweeping.
-         The batch size will be batch_size or size of replay memory, whichever is smaller. Not repetition occurs
+         The batch size will be batch_size or size of replay memory, whichever is smaller. No repetition occurs
         during sampling. """
 
         pos_size = int(self.rho * batch_size)

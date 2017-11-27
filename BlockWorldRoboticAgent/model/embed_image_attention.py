@@ -3,7 +3,7 @@ import numpy as np
 
 
 class EmbedImage:
-    """ Provides functionality for embedding images using a deep CNN.
+    """ Provides functionality for embedding images using a deep CNN. outputs using CNN a number of regions of the image
     """
 
     def get_images_data(self):
@@ -13,10 +13,7 @@ class EmbedImage:
         """ Embeds a batch of image using 2 layer convolutional neural network
          followed by a fully connected layer. """
 
-        #
         self.output_size = output_size
-
-        #We want to use the CNN to divide the region into images, over which we can do attention.
         height = image_dim
         width = image_dim
         channels = 3 * 5
@@ -36,7 +33,7 @@ class EmbedImage:
         with tf.variable_scope(scope_name + '_conv1') as scope:
             kernel = self._variable_with_weight_decay('weights', shape=[8, 8, channels, 32],
                                                       stddev=0.005, wd=0.0)
-            conv = tf.nn.conv2d(float_images, kernel, [1, 4, 4, 1], padding='SAME')
+            conv = tf.nn.conv2d(float_images, kernel, [1, 2, 2, 1], padding='SAME')
             biases = self._variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
             bias = tf.nn.bias_add(conv, biases)
             conv1 = tf.nn.relu(bias, name=scope.name)
@@ -44,41 +41,51 @@ class EmbedImage:
 
         # conv + affine + relu
         with tf.variable_scope(scope_name + '_conv2') as scope:
-            kernel = self._variable_with_weight_decay('weights', shape=[8, 8, 32, 32],
+            kernel = self._variable_with_weight_decay('weights', shape=[4, 4, 32, 32],
                                                       stddev=0.005, wd=0.0)
-            conv = tf.nn.conv2d(conv1, kernel, [1, 4, 4, 1], padding='SAME')
+            conv = tf.nn.conv2d(conv1, kernel, [1, 2, 2, 1], padding='SAME')
             biases = self._variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
             bias = tf.nn.bias_add(conv, biases)
             conv2 = tf.nn.relu(bias, name=scope.name)
             self.conv2 = conv1
             self.variables.extend([kernel, biases])
 
-        # conv + affine + relu
         with tf.variable_scope(scope_name + '_conv3') as scope:
-            kernel = self._variable_with_weight_decay('weights', shape=[4, 4, 32, 32],
+            kernel = self._variable_with_weight_decay('weights', shape=[2, 2, 32, 32],
                                                       stddev=0.005, wd=0.0)
             conv = tf.nn.conv2d(conv2, kernel, [1, 2, 2, 1], padding='SAME')
             biases = self._variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
             bias = tf.nn.bias_add(conv, biases)
             conv3 = tf.nn.relu(bias, name=scope.name)
+            self.conv3 = conv3
             self.variables.extend([kernel, biases])
 
-        # affine
-        with tf.variable_scope(scope_name + '_linear') as scope:
-            # Move everything into depth so we can perform a single matrix multiply.
-            reshape = tf.reshape(conv3, [batchsize, -1])
-            # Value before is hacked
-            # Not sure how to fix it
-            # It if based on image dimension
-            dim = 512
-            weights = self._variable_with_weight_decay('weights', [dim, self.output_size],
-                                                       stddev=0.004, wd=0.004)
-            biases = self._variable_on_cpu('biases', [self.output_size],
-                                           tf.constant_initializer(0.0))
-            image_embedding = tf.add(tf.matmul(reshape, weights), biases, name=scope.name)
-            self.variables.extend([weights, biases])
 
-        self.output = image_embedding
+        self.output = self.conv3
+
+
+        # with tf.variable_scope(scope_name + '_attention') as scope:
+        # # conv3 is now [batch_size, 15*15, 32] or mxd where m is number of regions, each region is represented by a 32 vector
+        #     self.conv3 = tf.reshape(self.conv3, [batchsize, -1, 32])
+        #     weights = self._variable_with_weight_decay('weights', [32, 32], stddev=0.004, wd=0.004)
+        #     keys=tf.matmul(self.conv3, weights)
+
+        # # skip teh affine
+        # with tf.variable_scope(scope_name + '_linear') as scope:
+        #     # Move everything into depth so we can perform a single matrix multiply.
+        #     print(conv2)
+        #     reshape = tf.reshape(conv2, [batchsize, -1])
+        #     # Value before is hacked
+        #     # Not sure how to fix it
+        #     # It if based on image dimension
+        #     dim = 160
+        #     weights = self._variable_with_weight_decay('weights', [dim, self.output_size],
+        #                                                stddev=0.004, wd=0.004)
+        #     biases = self._variable_on_cpu('biases', [self.output_size],
+        #                                    tf.constant_initializer(0.0))
+        #     image_embedding = tf.add(tf.matmul(reshape, weights), biases, name=scope.name)
+        #     self.variables.extend([weights, biases])
+
 
         # Create 4 images for padding in the beginning
         padding_image = np.zeros((image_dim, image_dim, 3), dtype=np.float32)
