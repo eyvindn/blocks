@@ -61,7 +61,7 @@ class EmbedImage:
             self.variables.extend([kernel, biases])
 
 
-        self.output = self.conv3
+        self.output = conv3
 
 
         # with tf.variable_scope(scope_name + '_attention') as scope:
