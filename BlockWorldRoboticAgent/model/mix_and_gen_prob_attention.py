@@ -71,7 +71,7 @@ class MixAndGenerateProbabilities:
                 # Value before is hacked
                 # Not sure how to fix it
                 # It if based on image dimension
-                dim = 160
+                dim = 7200
                 weights = tf.get_variable('weights', [dim, 200],
                                           initializer=tf.truncated_normal_initializer(stddev=0.004))
                 biases = tf.get_variable('biases', [200],
