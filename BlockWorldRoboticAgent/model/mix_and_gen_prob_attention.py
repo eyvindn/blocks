@@ -22,12 +22,12 @@ class MixAndGenerateProbabilities:
                 tf.get_variable_scope().reuse_variables()
 
             #pre-process keys
-            attention_vectorized = tf.reshape(image_embed, [batchsize, 225, 32])
+            attention_vectorized = tf.reshape(image_embed, [batchsize, 4*4, 32])
             weights = tf.get_variable('weights', [32, 32], initializer=tf.truncated_normal_initializer(stddev=0.004))
 
-            batched = tf.reshape(attention_vectorized,[batchsize*225,32])
+            batched = tf.reshape(attention_vectorized,[batchsize*4*4,32])
             batched_keys = tf.matmul(batched, weights)
-            keys = tf.reshape(batched_keys,[batchsize,225,32])
+            keys = tf.reshape(batched_keys,[batchsize,4*4,32])
 
             #pre-process query
             weights_2 = tf.get_variable('weights_2', [250, 32], initializer=tf.truncated_normal_initializer(stddev=0.004))
@@ -48,9 +48,9 @@ class MixAndGenerateProbabilities:
             weights_3 = tf.get_variable('weights_new', [32, 1], initializer=tf.truncated_normal_initializer(stddev=0.004))
             biases_3 = tf.get_variable('biases_new', [32], initializer=tf.constant_initializer(0.0))
 
-            batched_3 = tf.reshape(keys_queries, [batchsize * 225, 32])
+            batched_3 = tf.reshape(keys_queries, [batchsize * 4*4, 32])
             batched_final = tf.matmul(batched_3, weights_3)
-            attention_pre = tf.reshape(batched_final, [batchsize, 225, 1])
+            attention_pre = tf.reshape(batched_final, [batchsize, 4*4, 1])
 
             finalAttention = tf.nn.softmax(tf.add(attention_pre, biases_3, "attention"))
 
@@ -60,7 +60,7 @@ class MixAndGenerateProbabilities:
             #APPLY THE thing
 
             image_embed_weighted = tf.multiply(attention_vectorized, finalAttention)
-            image_embed = tf.reshape(image_embed_weighted, [batchsize, 15, 15, 32])
+            image_embed = tf.reshape(image_embed_weighted, [batchsize, 4, 4, 32])
 
             # FINISH IMAGE PROCESSING?
             with tf.variable_scope("linearImage") as scope:
@@ -71,7 +71,7 @@ class MixAndGenerateProbabilities:
                 # Value before is hacked
                 # Not sure how to fix it
                 # It if based on image dimension
-                dim = 7200
+                dim = 512
                 weights = tf.get_variable('weights', [dim, 200],
                                           initializer=tf.truncated_normal_initializer(stddev=0.004))
                 biases = tf.get_variable('biases', [200],

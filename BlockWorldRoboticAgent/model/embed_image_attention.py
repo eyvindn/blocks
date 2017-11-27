@@ -33,7 +33,7 @@ class EmbedImage:
         with tf.variable_scope(scope_name + '_conv1') as scope:
             kernel = self._variable_with_weight_decay('weights', shape=[8, 8, channels, 32],
                                                       stddev=0.005, wd=0.0)
-            conv = tf.nn.conv2d(float_images, kernel, [1, 2, 2, 1], padding='SAME')
+            conv = tf.nn.conv2d(float_images, kernel, [1, 4, 4, 1], padding='SAME')
             biases = self._variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
             bias = tf.nn.bias_add(conv, biases)
             conv1 = tf.nn.relu(bias, name=scope.name)
@@ -41,23 +41,23 @@ class EmbedImage:
 
         # conv + affine + relu
         with tf.variable_scope(scope_name + '_conv2') as scope:
-            kernel = self._variable_with_weight_decay('weights', shape=[4, 4, 32, 32],
+            kernel = self._variable_with_weight_decay('weights', shape=[8, 8, 32, 32],
                                                       stddev=0.005, wd=0.0)
-            conv = tf.nn.conv2d(conv1, kernel, [1, 2, 2, 1], padding='SAME')
+            conv = tf.nn.conv2d(conv1, kernel, [1, 4, 4, 1], padding='SAME')
             biases = self._variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
             bias = tf.nn.bias_add(conv, biases)
             conv2 = tf.nn.relu(bias, name=scope.name)
             self.conv2 = conv1
             self.variables.extend([kernel, biases])
 
+        # conv + affine + relu
         with tf.variable_scope(scope_name + '_conv3') as scope:
-            kernel = self._variable_with_weight_decay('weights', shape=[2, 2, 32, 32],
+            kernel = self._variable_with_weight_decay('weights', shape=[4, 4, 32, 32],
                                                       stddev=0.005, wd=0.0)
             conv = tf.nn.conv2d(conv2, kernel, [1, 2, 2, 1], padding='SAME')
             biases = self._variable_on_cpu('biases', [32], tf.constant_initializer(0.0))
             bias = tf.nn.bias_add(conv, biases)
             conv3 = tf.nn.relu(bias, name=scope.name)
-            self.conv3 = conv3
             self.variables.extend([kernel, biases])
 
 
