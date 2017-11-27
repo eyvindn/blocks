@@ -3,9 +3,9 @@ import embed_token_seq
 import image_preprocessing
 
 #CHANGED
-import embed_image_cnn_experiments as embed_image
+#import embed_image_cnn_experiments as embed_image
 
-#import embed_image
+import embed_image
 
 
 import mix_and_gen_prob
