@@ -127,7 +127,7 @@ class PolicyNetwork:
         # self.feed_iter += 1
 
         print("Evaluating policy - attention was")
-        print(result[3][0])
+        print(result[2][0])
 
         return result[0][0], result[1][0]
 
