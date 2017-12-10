@@ -52,7 +52,7 @@ class MixAndGenerateProbabilities:
             batched_final = tf.matmul(batched_3, weights_3)
             attention_pre = tf.reshape(batched_final, [batchsize, 4*4, 1])
 
-            finalAttention = tf.nn.softmax(tf.add(attention_pre, biases_3, "attention"))
+            finalAttention = tf.nn.softmax(tf.add(attention_pre, biases_3, "attention"), dim=1)
 
             print("finally")
             print(finalAttention)

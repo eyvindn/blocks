@@ -4,6 +4,9 @@ import message_protocol_util as mpu
 import reliable_connect as rc
 import generic_policy as gp
 import random
+from PIL import Image
+import numpy as np
+import scipy.misc
 
 ORACLE, RANDOM_WALK, STOP = range(3)
 
@@ -89,6 +92,17 @@ class AgentModelLess:
             sum_bisk_metric = sum_bisk_metric + bisk_metric
             logger.Log.info("Bisk Metric " + str(bisk_metric))
             logger.Log.info("Instruction: " + str(instruction))
+
+
+            # # output attention stuff here
+            # print((current_env*255)[60][60])
+            #
+            # #16 locations, 32 channel depth
+            # np.random(16,32 )
+            #
+            #
+            # steps = 0
+            # scipy.misc.imsave('images/example_' + str(i) + '_step_' + str(steps) + '.png', (current_env * 255))
 
             steps = 0
             sample_expected_reward = 0

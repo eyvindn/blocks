@@ -14,6 +14,8 @@ import embed_previous_action as epa
 import tensorflow as tf
 import numpy as np
 
+import logger
+
 
 class PolicyNetwork:
     """ Creates policy pi(s,a) that generates probability
@@ -126,8 +128,8 @@ class PolicyNetwork:
         # self.train_writer.add_summary(result[1], self.feed_iter)
         # self.feed_iter += 1
 
-        print("Evaluating policy - attention was")
-        print(result[2][0])
+#        logger.Log.info("Evaluating policy - attention was")
+        #self.last_attention_vec = result[2][0]
 
         return result[0][0], result[1][0]
 

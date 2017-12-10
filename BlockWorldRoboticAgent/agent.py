@@ -14,6 +14,8 @@ from model.v_network import StateValueFunctionModel
 import generic_policy as gp
 from datetime import datetime
 
+
+
 # The different kind of training algorithm that are used to train the agent.
 # SUPERVISEDMLE: Supervised learning that maximizes log-likelihood of next action.
 # SIMPLEQLEARNING: Deep Q-learning with an epsilon-greedy behaviour policy.
@@ -188,6 +190,14 @@ class Agent:
                     first = False
                     if block_id == gold_block_id:
                         first_right += 1
+
+                # if(steps == 0):
+                #     #output attention stuff here
+                #     print(current_env)
+                #
+                #     img = Image.fromarray((current_env*255).astype(int), 'RGB')
+                #     img.save('images/example_' + str(i) + '_step_' + str(steps) + '.png')
+
 
                 # Find probability of this action
                 logger.Log.debug(action_values)
