@@ -79,7 +79,7 @@ class PolicyGradient(AbstractLearning):
 
         return loss, entropy_penalty
 
-    def train(self, sess, train_writer, max_epoch=AbstractLearning.max_epochs, model_name="./model_attention_original_cnn"):
+    def train(self, sess, train_writer, max_epoch=AbstractLearning.max_epochs, model_name="./model_fixed_attention_original_cnn"):
         """ Performs policy gradient learning using Reinforce on the Block World Task. The agent interacts with the
          simulator and performs roll-out followed by REINFORCE updates. """
 
