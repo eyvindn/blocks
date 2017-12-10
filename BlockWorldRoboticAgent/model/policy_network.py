@@ -117,7 +117,7 @@ class PolicyNetwork:
         batch_size = text_embedder_bucket.get_batch_size()
         direction_input, block_input = self.previous_action_embedder.get_input()
 
-        result = sess.run([block_prob, direction_prob],
+        result = sess.run([block_prob, direction_prob, mix_and_gen_prob_bucket.attention],
                           feed_dict={text_input: text_input_word_indices,
                                      mask: text_mask, batch_size: 1,
                                      image_placeholder: [image_datas],
@@ -125,6 +125,9 @@ class PolicyNetwork:
                                      block_input: [previous_action[1]]})
         # self.train_writer.add_summary(result[1], self.feed_iter)
         # self.feed_iter += 1
+
+        print("Evaluating policy - attention was")
+        print(result[3][0])
 
         return result[0][0], result[1][0]
 

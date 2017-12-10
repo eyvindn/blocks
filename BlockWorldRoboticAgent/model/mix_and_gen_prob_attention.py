@@ -57,6 +57,8 @@ class MixAndGenerateProbabilities:
             print("finally")
             print(finalAttention)
 
+            self.attention = finalAttention
+
             #APPLY THE thing
 
             image_embed_weighted = tf.multiply(attention_vectorized, finalAttention)
