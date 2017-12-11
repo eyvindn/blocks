@@ -191,12 +191,12 @@ class Agent:
                     if block_id == gold_block_id:
                         first_right += 1
 
-                # if(steps == 0):
-                #     #output attention stuff here
-                #     print(current_env)
-                #
-                #     img = Image.fromarray((current_env*255).astype(int), 'RGB')
-                #     img.save('images/example_' + str(i) + '_step_' + str(steps) + '.png')
+                if(steps == 0):
+                    #output attention stuff here
+                    print(self.model.last_attention_vec)
+
+                    # img = Image.fromarray((current_env*255).astype(int), 'RGB')
+                    # img.save('images/example_' + str(i) + '_step_' + str(steps) + '.png')
 
 
                 # Find probability of this action

@@ -129,7 +129,7 @@ class PolicyNetwork:
         # self.feed_iter += 1
 
 #        logger.Log.info("Evaluating policy - attention was")
-        #self.last_attention_vec = result[2][0]
+        self.last_attention_vec = result[2][0]
 
         return result[0][0], result[1][0]
 
