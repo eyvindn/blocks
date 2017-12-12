@@ -111,7 +111,7 @@ class Agent:
             self.sess.run(tf.initialize_all_variables())
             logger.Log.info("Initialized all variables ")
             saver = tf.train.Saver()
-            saver.save(self.sess, "./saved/init_verify_no_added_attention.ckpt")
+            saver.save(self.sess, "./saved/init_vanilla_check3.ckpt")
         else:
             saver = tf.train.Saver()
             saver.restore(self.sess, model_file)
@@ -155,6 +155,8 @@ class Agent:
             (status_code, bisk_metric, current_env, instruction, trajectory) = self.receive_instruction_and_image()
             sum_bisk_metric = sum_bisk_metric + bisk_metric
             logger.Log.info("Bisk Metric " + str(bisk_metric))
+            if i > 0:
+                logger.Log.info("average Bisk Metric so far " + str(sum_bisk_metric/i))
             logger.Log.info("Instruction: " + str(instruction))
             text_indices = self.model.text_embedder.convert_text_to_indices(instruction)
             _, text_embedder_bucket = self.model.get_bucket_network(len(text_indices))
@@ -193,23 +195,23 @@ class Agent:
                     if block_id == gold_block_id:
                         first_right += 1
 
-                if(steps == 0):
-                    #output attention stuff here
-                    print(self.model.last_attention_vec)
-                    #sum along all the channels
-                    summed = np.sum(self.model.last_attention_vec, axis=1)/32
-                    print(summed)
-                    #now it's 1 dimensional, lets print it out
-                    summed = np.reshape(summed, (4,4))
-                    heatmap = np.repeat(np.repeat(summed, 30, axis=0), 30, axis=1) * 2000
-                    print(heatmap)
-                    heatmap = heatmap.astype(np.uint8)
-                    curr_pic = (current_env*255).astype(np.uint8)
-
-                    # img = Image.fromarray((current_env*255).astype(int), 'RGB')
-                    #img.save('images/example_' + str(i) + '_step_' + str(steps) + '.png')
-                    scipy.misc.imsave('images/example_' + str(i) + '_step_' + str(steps) + '.png', heatmap)
-                    scipy.misc.imsave('images/example_' + str(i) + '_step_' + str(steps) + '_board.png', curr_pic)
+                # if(steps == 0):
+                #     #output attention stuff here
+                #     print(self.model.last_attention_vec)
+                #     #sum along all the channels
+                #     summed = np.sum(self.model.last_attention_vec, axis=1)/32
+                #     print(summed)
+                #     #now it's 1 dimensional, lets print it out
+                #     summed = np.reshape(summed, (4,4))
+                #     heatmap = np.repeat(np.repeat(summed, 30, axis=0), 30, axis=1) * 2000
+                #     print(heatmap)
+                #     heatmap = heatmap.astype(np.uint8)
+                #     curr_pic = (current_env*255).astype(np.uint8)
+                #
+                #     # img = Image.fromarray((current_env*255).astype(int), 'RGB')
+                #     #img.save('images/example_' + str(i) + '_step_' + str(steps) + '.png')
+                #     scipy.misc.imsave('images/example_' + str(i) + '_step_' + str(steps) + '.png', heatmap)
+                #     scipy.misc.imsave('images/example_' + str(i) + '_step_' + str(steps) + '_board.png', curr_pic)
 
 
                 # Find probability of this action
