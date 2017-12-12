@@ -62,7 +62,7 @@ class MixAndGenerateProbabilities:
             #APPLY THE thing
 
             image_embed_weighted = tf.multiply(attention_vectorized, finalAttention)
-            image_embed = tf.reshape(image_embed_weighted, [batchsize, 4, 4, 32])
+            image_embed = attention_vectorized #tf.reshape(image_embed_weighted, [batchsize, 4, 4, 32])
 
             # FINISH IMAGE PROCESSING?
             with tf.variable_scope("linearImage") as scope:

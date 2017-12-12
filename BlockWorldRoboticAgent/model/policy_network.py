@@ -3,13 +3,13 @@ import embed_token_seq
 import image_preprocessing
 
 #CHANGED
-#import embed_image_attention as embed_image
+import embed_image_attention as embed_image
 
-import embed_image
+#import embed_image
 
 
-import mix_and_gen_prob
-#import mix_and_gen_prob_attention as mix_and_gen_prob
+#import mix_and_gen_prob
+import mix_and_gen_prob_attention as mix_and_gen_prob
 
 import embed_previous_action as epa
 import tensorflow as tf
