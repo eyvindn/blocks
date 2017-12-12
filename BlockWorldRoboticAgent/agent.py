@@ -201,7 +201,7 @@ class Agent:
                     print(summed)
                     #now it's 1 dimensional, lets print it out
                     summed = np.reshape(summed, (4,4))
-                    heatmap = np.repeat(np.repeat(summed, 30, axis=0), 30, axis=1) * 255
+                    heatmap = np.repeat(np.repeat(summed, 30, axis=0), 30, axis=1) * 255 + 127
                     print(heatmap)
                     heatmap = heatmap.astype(np.uint8)
                     curr_pic = current_env.astype(np.uint8)
