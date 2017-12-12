@@ -206,6 +206,7 @@ class Agent:
                     # img = Image.fromarray((current_env*255).astype(int), 'RGB')
                     #img.save('images/example_' + str(i) + '_step_' + str(steps) + '.png')
                     scipy.misc.imsave('images/example_' + str(i) + '_step_' + str(steps) + '.png', (heatmap * 255))
+                    scipy.misc.imsave('images/example_' + str(i) + '_step_' + str(steps) + '_board.png', (current_env * 255))
 
 
                 # Find probability of this action
