@@ -15,7 +15,7 @@ import generic_policy as gp
 from datetime import datetime
 from scipy import misc
 import numpy as np
-
+import scipy
 
 
 # The different kind of training algorithm that are used to train the agent.
