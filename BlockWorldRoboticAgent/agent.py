@@ -197,7 +197,7 @@ class Agent:
                     #output attention stuff here
                     print(self.model.last_attention_vec)
                     #sum along all the channels
-                    summed = np.sum(self.model.last_attention_vec, dim=1)/32
+                    summed = np.sum(self.model.last_attention_vec, axis=1)/32
                     print(summed)
                     #now it's 1 dimensional, lets print it out
                     summed = np.reshape(summed, (4,4))
