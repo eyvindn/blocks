@@ -13,6 +13,8 @@ from model.q_network import ActionValueFunctionNetwork
 from model.v_network import StateValueFunctionModel
 import generic_policy as gp
 from datetime import datetime
+from scipy import misc
+import numpy as np
 
 
 
@@ -194,9 +196,16 @@ class Agent:
                 if(steps == 0):
                     #output attention stuff here
                     print(self.model.last_attention_vec)
+                    #sum along all the channels
+                    summed = np.sum(self.model.last_attention_vec, dim=1)/32
+                    print(summed)
+                    #now it's 1 dimensional, lets print it out
+                    summed = np.reshape(summed, (4,4))
+                    heatmap = np.repeat(np.repeat(summed, 30, axis=0), 30, axis=1)
 
                     # img = Image.fromarray((current_env*255).astype(int), 'RGB')
-                    # img.save('images/example_' + str(i) + '_step_' + str(steps) + '.png')
+                    #img.save('images/example_' + str(i) + '_step_' + str(steps) + '.png')
+                    scipy.misc.imsave('images/example_' + str(i) + '_step_' + str(steps) + '.png', (heatmap * 255))
 
 
                 # Find probability of this action
