@@ -201,10 +201,10 @@ class Agent:
                     print(summed)
                     #now it's 1 dimensional, lets print it out
                     summed = np.reshape(summed, (4,4))
-                    heatmap = np.repeat(np.repeat(summed, 30, axis=0), 30, axis=1) * 255 + 127
+                    heatmap = np.repeat(np.repeat(summed, 30, axis=0), 30, axis=1) * 2000
                     print(heatmap)
                     heatmap = heatmap.astype(np.uint8)
-                    curr_pic = current_env.astype(np.uint8)
+                    curr_pic = (current_env*255).astype(np.uint8)
 
                     # img = Image.fromarray((current_env*255).astype(int), 'RGB')
                     #img.save('images/example_' + str(i) + '_step_' + str(steps) + '.png')
